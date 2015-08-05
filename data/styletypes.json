@@ -1,0 +1,24 @@
+{
+	"styletypes":[
+		{
+			"name":"unit",
+			"inputType":"text",
+			"regex": ""
+		},
+		{
+			"name":"color",
+			"inputType":"colorpicker",
+			"regex":""
+		},
+		{
+			"name":"string",
+			"inputType":"text",
+			"regex":""
+		},
+		{
+			"name":"list",
+			"inputType":"select",
+			"regex":""
+		}
+	]
+}

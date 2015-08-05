@@ -77,14 +77,10 @@ var fontStyles = [
 		'name': 'padding-right',
 		'type': 'string',
 		'default': '0'
-	}
-];
+	}];
 
 var camelCase = function (str) {
-
-	var updatedStr = str.replace('-', ' ');
-
-	return updatedStr.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match, index) {
+	return str.replace('-', ' ').replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match, index) {
 		if (+match === 0) {
 			return '';
 		}
@@ -107,14 +103,11 @@ var FontBox = React.createClass({
 			}.bind(this)
 		});
 	},
-	handleFontSubmit: function(font) {
+	handleStyleSubmit: function(font) {
+
 		var fonts = $.extend(this.state.data, font);
 
-		// fonts.push(font);
 		this.setState({data: fonts}, function() {
-			// `setState` accepts a callback. To avoid (improbable) race condition,
-			// `we'll send the ajax request right after we optimistically set the new
-			// `state.
 			$.ajax({
 				url: this.props.url,
 				dataType: 'json',
@@ -141,7 +134,7 @@ var FontBox = React.createClass({
 		return (
 			<div className="fontBox">
 				<StyleList data={this.state.data} />
-				<StyleForm onFontSubmit={this.handleFontSubmit} />
+				<StyleForm onStyleSubmit={this.handleStyleSubmit} />
 			</div>
 		);
 	}
@@ -167,9 +160,6 @@ var StyleList = React.createClass({
 			var retValue = data[style];
 
 			return (
-				// `key` is a React-specific concept and is not mandatory for the
-				// purpose of this tutorial. if you're curious, see more here:
-				// http://facebook.github.io/react/docs/multiple-components.html#dynamic-children
 				<StyleItem key={index} varName={style} val={retValue} />
 			);
 		});
@@ -187,18 +177,15 @@ var StyleForm = React.createClass({
 		e.preventDefault();
 		var varName = React.findDOMNode(this.refs.styleType).value.trim();
 		var varValue = React.findDOMNode(this.refs.styleValue).value.trim();
-		var pushValue = styleName + varName;
-		var moreValues = "";
+		var pushValue = camelCase(styleName + ' ' + varName);
 		var objPush = {};
 
 		if (!varName || !varValue) {
 			return;
 		}
 
-		moreValues = camelCase(varName);
-
-		objPush[moreValues] = varValue;
-		this.props.onFontSubmit(objPush);
+		objPush[pushValue] = varValue;
+		this.props.onStyleSubmit(objPush);
 		React.findDOMNode(this.refs.styleType).value = '';
 		React.findDOMNode(this.refs.styleValue).value = '';
 	},
