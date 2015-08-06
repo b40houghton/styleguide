@@ -1,4 +1,6 @@
 {
     "primaryHeadingFontSize": "3em",
-    "primaryHeadingColor": "green"
+    "primaryHeadingColor": "green",
+    "primaryHeadingFontWeight": "400",
+    "primaryHeadingFontStyle": "normal"
 }

@@ -1,4 +1,4 @@
-{
+module.exports = {
 	"font":[
 		{
 			"name": "color",
@@ -92,8 +92,13 @@
 			"name": "padding-right",
 			"type": "string",
 			"default": "0"
-		}],
-	"button":[],
-	"color":[],
-	"link":[]
+		}
+	],
+	"button":[
+		{
+			"name": "color",
+			"type": "color",
+			"default": "#000000"
+		},
+	]
 }
