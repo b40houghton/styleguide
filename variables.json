@@ -1,6 +1,11 @@
 {
-    "primaryHeadingFontSize": "3em",
-    "primaryHeadingColor": "green",
-    "primaryHeadingFontWeight": "400",
-    "primaryHeadingFontStyle": "normal"
+    "primaryHeadingFontSize": "10vw",
+    "primaryHeadingColor": "RED",
+    "primaryHeadingLineHeight": "1.1",
+    "primaryHeadingFontWeight": "BOLD",
+    "primaryHeadingMarginLeft": "0",
+    "primaryHeadingLetterSpacing": "normal",
+    "primaryHeadingFontFamily": "arial",
+    "primaryHeadingFontStyle": "normal",
+    "primaryHeadingPaddingBottom": "0"
 }
