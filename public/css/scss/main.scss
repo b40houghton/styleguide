@@ -3,7 +3,15 @@
 
 
 .primary-heading {
-	
+	color: $primaryHeadingColor;
+	font-family:$primaryHeadingFontFamily;
+	font-style:$primaryHeadingFontStyle;
+	font-weight:$primaryHeadingFontWeight;
+	font-size:$primaryHeadingFontSize;
+	line-height:$primaryHeadingLineHeight;
+	letter-spacing:$primaryHeadingLetterSpacing;
+	margin:$primaryHeadingMarginTop $primaryHeadingMarginRight $primaryHeadingMarginBottom $primaryHeadingMarginLeft;
+	padding: $primaryHeadingPaddingTop $primaryHeadingPaddingRight $primaryHeadingPaddingBottom $primaryHeadingPaddingLeft;
 }
 
 ul{
