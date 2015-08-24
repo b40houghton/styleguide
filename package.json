@@ -2,6 +2,7 @@
   "name": "styleguide",
   "version": "0.0.1",
   "description": "Dynamic Styleguide for easy developer/designer collaboration.",
+  "author":"Brandon Houghton <40.houghton@gmail.com>",
   "main": "server.js",
   "dependencies": {
     "body-parser": "^1.4.3",

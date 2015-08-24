@@ -5,7 +5,7 @@ var fs 					= require('fs');
 var retObj				= {};
 var outputFile			= './defaults.json';
 
-function camelize (str) {
+exports.camelize = function (str) {
 	return str.replace('-', ' ').replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match, index) {
 		if (+match === 0) {
 			return '';
@@ -23,7 +23,7 @@ exports.getDefaultStyles = function () {
 		//if the type exists within the definitions, add styles to the return object.
 		if(styleDefinitions[obj.type]){
 			styleDefinitions[obj.type].forEach(function (defObj){
-				returnKey = camelize(obj.name + " " + defObj.name);
+				returnKey = exports.camelize(obj.name + " " + defObj.name);
 				retObj[returnKey] = defObj.default;
 			});
 		}

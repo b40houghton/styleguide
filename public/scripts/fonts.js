@@ -105,6 +105,8 @@ var FontBox = React.createClass({
 	},
 	handleStyleSubmit: function(font) {
 
+		console.log(font);
+
 		var fonts = $.extend(this.state.data, font);
 
 		this.setState({data: fonts}, function() {
@@ -130,10 +132,9 @@ var FontBox = React.createClass({
 		setInterval(this.loadFontsFromServer, this.props.pollInterval);
 	},
 	render: function () {
-
 		return (
 			<div className="fontBox">
-				<StyleList data={this.state.data} />
+				<StyleList data={this.state.data} onEditSubmit={this.handleStyleSubmit}/>
 				<StyleForm onStyleSubmit={this.handleStyleSubmit} />
 			</div>
 		);
@@ -141,10 +142,48 @@ var FontBox = React.createClass({
 });
 
 var StyleItem = React.createClass({
+	getInitialState: function () {
+		return {editable: false};
+	},
+	handleEdit: function () {
+		if (!this.state.editable){
+			this.setState({editable:true});
+		}
+	},
+	handleSave: function () {
 
+		if (this.state.editable){
+			var submitObj = {};
+			var somevalue = React.findDOMNode(this.refs.editInput).value.trim();
+
+			if(somevalue === ""){
+				somevalue = this.props.val;
+			}
+
+			submitObj[this.props.varName] = somevalue;
+
+			this.props.onEdit(submitObj);
+
+			this.setState({editable:false});
+		}
+	},
+	handleCancel: function () {
+		if(this.state.editable){
+			this.setState({editable:false});
+		}
+	},
 	render: function () {
+
+		var editClassName = this.state.editable ? 'editing' : '';
+
 		return (
-			<li>{this.props.varName}: {this.props.val}</li>
+			<li className={editClassName}>{this.props.varName}:
+				<label>{this.props.val}</label>
+				<input type="text" placeholder={this.props.val} ref='editInput'/>
+				<button className='btn-edit' onClick={this.handleEdit}>Edit</button>
+				<button className='btn-save' onClick={this.handleSave}>Save</button>
+				<button className='btn-cancel' onClick={this.handleCancel}>Cancel</button>
+			</li>
 		);
 	}
 });
@@ -153,14 +192,13 @@ var StyleList = React.createClass({
 	render: function () {
 
 		var data = this.props.data;
-
-
+		var onEditSubmit = this.props.onEditSubmit;
 		var styleNodes = Object.keys(data).map(function(style, index) {
 
 			var retValue = data[style];
 
 			return (
-				<StyleItem key={index} varName={style} val={retValue} />
+				<StyleItem key={index} varName={style} val={retValue} onEdit={onEditSubmit} />
 			);
 		});
 

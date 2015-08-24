@@ -3,9 +3,12 @@
 var jsonSass = require('gulp-json-sass'),
 	gulp = require('gulp'),
 	browserSync = require('browser-sync').create(),
+	reload = browserSync.reload;
 	concat = require('gulp-concat'),
 	sass = require('gulp-ruby-sass'),
+	del = require('del'),
 	defaults = require('./style-defaults.js');
+	sassClass = require('./gulp-json-sass-class.js');
 
 gulp.task('dev', ['sass:defaults','sass'], function () {
 	browserSync.init({
@@ -14,9 +17,12 @@ gulp.task('dev', ['sass:defaults','sass'], function () {
 
 	gulp.watch(['public/css/scss/main.scss', 'public/css/scss/_variables.scss'], ['sass']);
 	gulp.watch('variables.json', ['jsonSass']);
+	gulp.watch('public/css/main.css').on('change', reload('public/css/main.css'));
 });
 
-gulp.task('sass:defaults', function () {
+gulp.task('clean:defaults', del.bind(null,['./defaults.json']));
+
+gulp.task('sass:defaults',['clean:defaults'], function () {
 
 	//run the defaults
 	defaults.getDefaultStyles();
@@ -27,7 +33,7 @@ gulp.task('sass:defaults', function () {
 		}))
 		.pipe(concat('_defaultVariables.scss'))
 		.pipe(gulp.dest('public/css/scss/'))
-		.pipe(browserSync.stream());
+		.pipe(reload({stream:true}));
 });
 
 
@@ -40,7 +46,7 @@ gulp.task('sass', function () {
 		.pipe(browserSync.stream());
 });
 
-gulp.task('jsonSass', function () {
+gulp.task('json:sass', function () {
 	return gulp.src(['variables.json'])
 		.pipe(jsonSass({
 			sass: false
@@ -49,6 +55,13 @@ gulp.task('jsonSass', function () {
 		.pipe(gulp.dest('public/css/scss/'))
 		.pipe(browserSync.stream());
 });
+
+gulp.task('json:slass', function () {
+	return gulp.src(['./data/*.json'])
+		.pipe(sassClass({
+			option: true
+		}));
+})
 
 gulp.task('watch', function () {
 	gulp.watch('./public/css/scss/*.scss', ['sass']);

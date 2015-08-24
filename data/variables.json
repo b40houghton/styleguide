@@ -1,0 +1,27 @@
+{	
+	"name":"variables",
+	"classes":[
+		{
+			"name":"primary-heading",
+			"type":"font",
+			"styles":{
+				"font-size": "5vw",
+			    "color": "'green'",
+			    "letter-spacing": "'normal'",
+			    "font-family": "'Helvetica'",
+			    "font-weight": "100"
+			}
+		},
+		{
+			"name":"secondary-heading",
+			"type":"font",
+			"styles":{
+				"font-size": "5vw",
+			    "color": "'red'",
+			    "letter-spacing": "'normal'",
+			    "font-family": "'Helvetica'",
+			    "font-weight": "100"
+			}
+		}
+	]
+}

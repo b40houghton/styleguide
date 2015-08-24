@@ -14,6 +14,8 @@
 	padding: $primaryHeadingPaddingTop $primaryHeadingPaddingRight $primaryHeadingPaddingBottom $primaryHeadingPaddingLeft;
 }
 
+
+
 ul{
 	margin:0;
 	padding:0;
@@ -22,5 +24,57 @@ ul{
 ul li{
 	list-style:none;
 	padding:0;
-	margin:0;
+	margin:0 0 1em;
+	line-height:3em;
+	border-bottom:1px solid #eeeeee;
+
+	input,
+	.btn-save,
+	.btn-cancel{
+		display: none;
+	}
+
+	button{
+		text-align: right;
+		padding-left:2em;
+		background-color:#ffffff;
+		border:none;
+		background-repeat:no-repeat;
+		background-position:5% 50%;
+		background-size: 1rem;
+		line-height: 2em;
+		margin-left:1em;
+		cursor: pointer;
+
+		&:hover{
+			text-decoration: underline;
+		}	
+
+		&.btn-edit{
+			background-image:url(/images/edit.svg);
+		}
+
+		&.btn-save{
+			background-image:url(/images/save.svg);
+		}
+
+		&.btn-cancel{
+			background-image:url(/images/cancel.svg);
+		}
+	}
+}
+
+ul li.editing{
+	input,
+	.btn-save,
+	.btn-cancel{
+		display: inline-block;
+	}
+
+	label,
+	.btn-edit{
+		display: none;
+	}
+
+
 }
