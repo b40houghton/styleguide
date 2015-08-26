@@ -26,7 +26,7 @@ module.exports = function (options) {
 	 	}
 
 		var slassObj = JSON.parse(file.contents.toString('utf8'));
-		var classStyles = slassObj.classes.map(function (i){
+		var classStyles = slassObj.fonts.map(function (i){
 
 			var classKeys = Object.keys(i.styles);
 

@@ -3,11 +3,11 @@
 var jsonSass = require('gulp-json-sass'),
 	gulp = require('gulp'),
 	browserSync = require('browser-sync').create(),
-	reload = browserSync.reload;
+	reload = browserSync.reload,
 	concat = require('gulp-concat'),
 	sass = require('gulp-ruby-sass'),
 	del = require('del'),
-	defaults = require('./style-defaults.js');
+	defaults = require('./style-defaults.js'),
 	sassClass = require('./gulp-json-sass-class.js');
 
 gulp.task('dev', ['sass:defaults','sass'], function () {
@@ -15,9 +15,16 @@ gulp.task('dev', ['sass:defaults','sass'], function () {
 		proxy: 'localhost:3000'
 	});
 
-	gulp.watch(['public/css/scss/main.scss', 'public/css/scss/_variables.scss'], ['sass']);
-	gulp.watch('variables.json', ['jsonSass']);
-	gulp.watch('public/css/main.css').on('change', reload('public/css/main.css'));
+	gulp.watch(['public/css/scss/main.scss', 'public/css/scss/slass.scss'], ['sass']);
+	gulp.watch('./data/fonts.json', ['json:slass']);
+
+	//delay the reload
+	gulp.watch('public/css/slass.css').on('change', function(){
+		setTimeout(function(){
+			reload('public/css/slass.css');
+		}, 1000);
+	});
+
 });
 
 gulp.task('clean:defaults', del.bind(null,['./defaults.json']));
@@ -57,13 +64,9 @@ gulp.task('json:sass', function () {
 });
 
 gulp.task('json:slass', function () {
-	return gulp.src(['./data/*.json'])
+	return gulp.src(['./data/fonts.json'])
 		.pipe(sassClass({
 			option: true
-		}));
-})
-
-gulp.task('watch', function () {
-	gulp.watch('./public/css/scss/*.scss', ['sass']);
-	gulp.watch('./variables.json', ['jsonSass']);
+		}))
+		.pipe(reload({stream:true}));
 });

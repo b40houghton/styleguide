@@ -1,0 +1,26 @@
+{
+    "fonts": [
+        {
+            "name": "primary-heading",
+            "type": "font",
+            "styles": {
+                "font-size": "3em",
+                "color": "green",
+                "letter-spacing": "normal",
+                "font-family": "Helvetica",
+                "font-weight": "100"
+            }
+        },
+        {
+            "name": "secondary-heading",
+            "type": "font",
+            "styles": {
+                "font-size": "100px",
+                "color": "red",
+                "letter-spacing": "normal",
+                "font-family": "'Helvetica'",
+                "font-weight": "100"
+            }
+        }
+    ]
+}
