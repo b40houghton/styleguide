@@ -4,19 +4,23 @@
             "name": "primary-heading",
             "type": "font",
             "styles": {
-                "font-size": "3em",
-                "color": "green",
-                "letter-spacing": "normal",
+                "font-size": "4vw",
+                "color": "red",
+                "letter-spacing": "ht",
                 "font-family": "Helvetica",
-                "font-weight": "100"
+                "font-weight": "100",
+                "margin-top": "1px",
+                "margin-bottom": "100px",
+                "padding-bottom": "100px",
+                "font-style": "italic"
             }
         },
         {
             "name": "secondary-heading",
             "type": "font",
             "styles": {
-                "font-size": "100px",
-                "color": "red",
+                "font-size": "30px",
+                "color": "brown",
                 "letter-spacing": "normal",
                 "font-family": "'Helvetica'",
                 "font-weight": "100"

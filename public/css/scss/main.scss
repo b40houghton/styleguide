@@ -57,6 +57,12 @@ ul li.editing{
 	.btn-edit{
 		display: none;
 	}
+}
 
+div form{
+	display:none;
+}
 
+.active form{
+	display: block;
 }
