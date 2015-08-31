@@ -2,7 +2,5 @@
 node_modules
 .DS_Store
 .sass-cache/
-public/css/scss/_defaultVariables.scss
-public/css/scss/_variables.scss
+public/css/scss/slass.scss
 public/css/**/*.css
-defaults.json
