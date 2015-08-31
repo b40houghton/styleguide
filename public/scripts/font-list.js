@@ -50,6 +50,17 @@ var StyleBox = React.createClass({
 		this.loadFontsFromServer();
 		setInterval(this.loadFontsFromServer, this.props.pollInterval);
 	},
+	delete: function (type, className, classNameProperty) {
+		var deleteType = {};
+
+		deleteType.class = function (classNameClass) {
+			console.log("delete class");
+		};
+
+		deleteType.style = function (classNameClass, classProperty){
+			console.log("delete style");
+		};
+	},
 	add: function (type, obj) {
 
 		var data = this.state.data;
@@ -110,7 +121,7 @@ var StyleBox = React.createClass({
 
 var StyleClassList = React.createClass({
 	addNewClass: function () {
-		console.log("hey");
+		// console.log("hey");
 	},
 	render: function () {
 
@@ -125,7 +136,7 @@ var StyleClassList = React.createClass({
 		}
 
 		return (
-			<div className="style-class">
+			<div>
 				{styleClasses}
 				<ClassForm {...props} />
 			</div>
@@ -152,14 +163,22 @@ var StyleClass = React.createClass({
 
 		return (
 			<div className={editClass}>
-				<span className={props.name}>.{props.name}</span>
-				<input type="text" />
-				<button onClick={this.handleClassEdit}>Edit</button>
-				<button onClick={this.handleClassSave}>Save</button>
-				<button onClick={this.handleClassCancel}>Cancel</button>
-				<button onClick={this.handleClassDelete}>Delete</button>
-				<ul>{styles}</ul>
-				<StyleForm styleName={name} {...props}/>
+				<div className="class-item-block">
+					<div className="style-block">
+						<span className={props.name}>.{props.name}</span>
+						{/*<input type="text" />
+								<button onClick={this.handleClassEdit}>Edit</button>
+								<button onClick={this.handleClassSave}>Save</button>
+								<button onClick={this.handleClassCancel}>Cancel</button>
+								<button onClick={this.handleClassDelete}>Delete</button>*/}
+					</div>
+					
+					<div className="style-list">
+						<ul>{styles}</ul>
+						<StyleForm styleName={name} {...props}/>
+					</div>
+				</div>
+				
 			</div>
 		);
 	}
@@ -172,6 +191,8 @@ var StyleItem = React.createClass({
 	handleEdit: function () {
 		if (!this.state.editable){
 			this.setState({editable:true});
+		} else{
+			this.setState({editable:false});
 		}
 	},
 	handleSave: function () {
@@ -382,20 +403,22 @@ var StyleForm = React.createClass({
 			);
 		});
 
-		var activeClass = (this.state.showForm) ? 'active': '';
+		var styleFormContainer = "style-form-container";
+			styleFormContainer += (this.state.showForm) ? ' active': '';
+
 		var ctaText = (this.state.showForm) ? 'x cancel':'+ add style';
 		
 
 		return (
-			<div className={activeClass}>
-				<span onClick={this.handleAddClick}>{ctaText}</span>
+			<div className={styleFormContainer}>
 				<form onSubmit={this.handleSubmit}>
 					<select ref='styleType'>
 						{styleTypeOptions}
 					</select>
 					<input type='text' ref='styleValue'/>
-					<input type='submit' value='Add'/>
+					<input type='submit' className="btn" value='Add'/>
 				</form>
+				<button className="btn" onClick={this.handleAddClick}>{ctaText}</button>
 			</div>
 		);
 	}
@@ -459,7 +482,7 @@ var ClassForm = React.createClass({
 					<input ref="classNameInput" type="text" />
 				</label>
 				<button className="submit-class" onClick={this.handleClassSubmit}>Save</button>
-				<button className="add-class" onClick={this.handleClassToggle}>{classBtnContent}</button>
+				<button className="toggle-class" onClick={this.handleClassToggle}>{classBtnContent}</button>
 			</div>
 		);
 	}
