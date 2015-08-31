@@ -22,7 +22,7 @@ gulp.task('dev', ['sass:defaults','sass'], function () {
 	gulp.watch('public/css/slass.css').on('change', function(){
 		setTimeout(function(){
 			reload('public/css/slass.css');
-		}, 1000);
+		}, 400);
 	});
 
 });
