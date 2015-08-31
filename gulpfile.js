@@ -15,7 +15,7 @@ gulp.task('dev', ['sass:defaults','sass'], function () {
 		proxy: 'localhost:3000'
 	});
 
-	gulp.watch(['public/css/scss/main.scss', 'public/css/scss/slass.scss'], ['sass']);
+	gulp.watch(['public/css/scss/*.scss'], ['sass']);
 	gulp.watch('./data/fonts.json', ['json:slass']);
 
 	//delay the reload
