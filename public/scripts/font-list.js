@@ -14,8 +14,32 @@ var StyleBox = React.createClass({
 			}.bind(this)
 		});
 	},
-	loadStyleTypesFromServer: function () {
-		console.log("loadStyleTypesFromServer");
+	removeStyle: function (styleClassName, styleProperty) {
+		var data = this.state.data;
+
+		//delete the property from the class styles object
+		for(let item in data.fonts){
+			if(data.fonts[item].name === styleClassName && Object.keys(data.fonts[item].styles).length){
+				delete data.fonts[item].styles[styleProperty];
+			}
+		}
+
+		//post to file and set state
+		this.setState({data: data}, function() {
+			$.ajax({
+				url: this.props.url,
+				dataType: 'json',
+				type: 'POST',
+				data: JSON.stringify(data),
+				contentType:' application/json',
+				success: function(data) {
+					this.setState({data: data});
+				}.bind(this),
+				error: function(xhr, status, err) {
+					console.error(this.props.url, status, err.toString());
+				}.bind(this)
+			});
+		});
 	},
 	getInitialState: function() {
 		return {
@@ -26,22 +50,40 @@ var StyleBox = React.createClass({
 		this.loadFontsFromServer();
 		setInterval(this.loadFontsFromServer, this.props.pollInterval);
 	},
-	onStyleSubmit: function(font) {
-		var styles = {};
-		var data = this.state.data;
-		
-		for(let item in data.fonts){
-			if(data.fonts[item].name === font.name && Object.keys(data.fonts[item].styles).length){
-				data.fonts[item].styles = $.extend(data.fonts[item].styles, font.styles);
-			}
-		}
+	add: function (type, obj) {
 
-		this.setState({data: data}, function() {
+		var data = this.state.data;
+		var styles = {};
+		var postObj = {};
+		var addType = {};
+
+		addType.class = function (classObj) {
+
+			data.fonts.push(classObj);
+
+			return data;
+		};
+
+		addType.style = function (styleObj) {
+			for(let item in data.fonts){
+				if(data.fonts[item].name === obj.name && data.fonts[item].styles !== undefined){
+					data.fonts[item].styles = $.extend(data.fonts[item].styles, obj.styles);
+				}
+			}
+			return data;
+		};
+
+		postObj = addType[type](obj);
+
+		// console.log(postObj);
+
+		this.setState({data: postObj}, function() {
 			$.ajax({
 				url: this.props.url,
 				dataType: 'json',
 				type: 'POST',
-				data: data,
+				data: JSON.stringify(postObj),
+				contentType:"application/json",
 				success: function(data) {
 					this.setState({data: data});
 				}.bind(this),
@@ -53,50 +95,71 @@ var StyleBox = React.createClass({
 	},
 	render: function () {
 
+		var props = {};
+			props.data = this.state.data;
+			props.removeStyle = this.removeStyle;
+			props.add = this.add;
+
 		return (
 			<div className="fontBox">
-				<StyleClassList data={this.state.data} handleStyleSubmit={this.onStyleSubmit} />
+				<StyleClassList {...props} />
 			</div>
 		);
 	}
 });
 
 var StyleClassList = React.createClass({
+	addNewClass: function () {
+		console.log("hey");
+	},
 	render: function () {
 
 		var data = this.props.data;
 		var styleClasses;
-		var styleSubmit = this.props.handleStyleSubmit;
+		var props = this.props;
 
 		if(data.fonts !== undefined){
 			styleClasses = data.fonts.map(function(item, index){
-				return <StyleClass key={index} name={item.name} styles={item.styles} onEditSubmit={styleSubmit} />;
+				return <StyleClass {...props} key={index} name={item.name} styles={item.styles}/>;
 			});
 		}
 
 		return (
 			<div className="style-class">
 				{styleClasses}
+				<ClassForm {...props} />
 			</div>
+
 		);
 	}
 });
 
 var StyleClass = React.createClass({
+	getInitialState: function () {
+		return {editable: false};
+	},
+	handleClassEdit: function () {
+		console.log("edit class");
+		console.log(this.props);
+	},
 	render: function () {
-		var data = this.props;
-		var onEditSubmit = this.props.onEditSubmit;
-		var name = data.name;
-		var styles = Object.keys(data.styles).map(function(styleItem){
+		var props = this.props;
+		var editClass = (this.state.editable) ? 'isEditing':'';
 
-			return <StyleItem styleClassName={name} keyValue={styleItem} property={data.styles[styleItem]} onEdit={onEditSubmit} />;
+		var styles = Object.keys(props.styles).map(function(styleItem, index){
+			return <StyleItem {...props} key={index} keyValue={styleItem} property={props.styles[styleItem]} />;
 		});
 
 		return (
-			<div>
-				<span className={name}>.{name}</span>
+			<div className={editClass}>
+				<span className={props.name}>.{props.name}</span>
+				<input type="text" />
+				<button onClick={this.handleClassEdit}>Edit</button>
+				<button onClick={this.handleClassSave}>Save</button>
+				<button onClick={this.handleClassCancel}>Cancel</button>
+				<button onClick={this.handleClassDelete}>Delete</button>
 				<ul>{styles}</ul>
-				<StyleForm styleName={name} onStyleSubmit={onEditSubmit}/>
+				<StyleForm styleName={name} {...props}/>
 			</div>
 		);
 	}
@@ -116,24 +179,30 @@ var StyleItem = React.createClass({
 		if (this.state.editable){
 
 			var submitObj = {};
-			submitObj.styles = {};
-			var styleClassName = this.props.styleClassName;
+				submitObj.styles = {};
+
  			var inputValue = React.findDOMNode(this.refs.editInput).value.trim();
 
-			//set back to initial value if nothing returned
+ 			//set back to initial value if nothing returned
 			if(inputValue === "" || inputValue === undefined){
 				inputValue = this.props.property;
 			}
 
 			//pass classname w/ the obj
-			submitObj.name = styleClassName;
+			submitObj.name = this.props.name;
 
 			submitObj.styles[this.props.keyValue] = inputValue;
 
-			this.props.onEdit(submitObj);
+			this.props.add('style', submitObj);
 
 			this.setState({editable:false});
 		}
+	},
+	handleDelete: function () {
+		var styleClassName = this.props.name;
+		var styleProperty = this.props.keyValue;
+
+		this.props.removeStyle(styleClassName, styleProperty);
 	},
 	handleCancel: function () {
 		if(this.state.editable){
@@ -141,15 +210,15 @@ var StyleItem = React.createClass({
 		}
 	},
 	render: function () {
-
 		var editClassName = this.state.editable ? 'editing' : '';
 
 		return (
 			<li className={editClassName}>
 				{this.props.keyValue}: 
 				<label>{this.props.property}</label>
-				<input type='text' placeholder={this.props.property} ref='editInput' />
+				<input type='text' defaultValue={this.props.property} ref='editInput' />
 				<button className='btn-edit' onClick={this.handleEdit}>Edit</button>
+				<button className='btn-delete' onClick={this.handleDelete}>Delete</button>
 				<button className='btn-save' onClick={this.handleSave}>Save</button>
 				<button className='btn-cancel' onClick={this.handleCancel}>Cancel</button>
 			</li>
@@ -255,6 +324,21 @@ var StyleForm = React.createClass({
 					"name": "padding-right",
 					"type": "string",
 					"default": "0"
+				},
+				{
+					"name": "text-shadow",
+					"type": "string",
+					"default": ""
+				},
+				{
+					"name": "background-color",
+					"type": "color",
+					"default": "transparent"
+				},
+				{
+					"name":"text-align",
+					"type":"string",
+					"default":"left"
 				}
 			]
 		};
@@ -276,35 +360,35 @@ var StyleForm = React.createClass({
 		var varName = React.findDOMNode(this.refs.styleType).value.trim();
 		var varValue = React.findDOMNode(this.refs.styleValue).value.trim();
 		var objPush = {};
-		objPush.styles = {};
+			objPush.styles = {};
 
 		if(!varName || !varValue) {
 			return;
 		}
 
-		objPush.name = this.props.styleName;
+		objPush.name = this.props.name;
 		objPush.styles[varName] = varValue;
 
-
-		this.props.onStyleSubmit(objPush);
+		this.props.add('style', objPush);
 
 		this.setState({showForm:false});
 
 	},
 	render: function() {
 
-		var styleTypeOptions = this.state.styleTypes.map(function (obj) {
+		var styleTypeOptions = this.state.styleTypes.map(function (obj, index) {
 			return (
-				<option>{obj.name}</option>
+				<option key={index}>{obj.name}</option>
 			);
 		});
 
 		var activeClass = (this.state.showForm) ? 'active': '';
+		var ctaText = (this.state.showForm) ? 'x cancel':'+ add style';
 		
 
 		return (
 			<div className={activeClass}>
-				<span onClick={this.handleAddClick}>+</span>
+				<span onClick={this.handleAddClick}>{ctaText}</span>
 				<form onSubmit={this.handleSubmit}>
 					<select ref='styleType'>
 						{styleTypeOptions}
@@ -312,6 +396,70 @@ var StyleForm = React.createClass({
 					<input type='text' ref='styleValue'/>
 					<input type='submit' value='Add'/>
 				</form>
+			</div>
+		);
+	}
+});
+
+var ClassForm = React.createClass({
+	getInitialState: function () {
+		return {
+			classFormActive: false
+		};
+	},
+	//push to add
+	handleClassSubmit: function () {
+
+		var classNameVal = React.findDOMNode(this.refs.classNameInput).value.trim();
+		var pushObj = {};
+
+		//check if it already exists
+
+		if(classNameVal === ""){
+			return;
+		}
+
+		//build the obj
+		pushObj.name = classNameVal;
+		pushObj.type = "font";
+		pushObj.content = "The quick brown fox jumps over the lazy dog.";
+		pushObj.styles = {};
+
+		//push obj to the json file
+		this.props.add('class', pushObj);
+
+		//hide the form
+		this.setState({
+			classFormActive:false
+		});
+	},
+	//toggle form
+	handleClassToggle: function () {
+		if(!this.state.classFormActive){
+			this.setState({
+				classFormActive:true
+			});
+		} else {
+			this.setState({
+				classFormActive:false
+			});
+		}
+	},
+	render: function () {
+		var classBtnContent = (!this.state.classFormActive) ? 'New Class':'Cancel';
+		var classFormContainer = 'class-form-container';
+
+		//add class active to container
+		classFormContainer += (this.state.classFormActive) ? ' active' :'';
+
+		return (
+			<div className={classFormContainer}>
+				<label>
+					Class Name:&nbsp;
+					<input ref="classNameInput" type="text" />
+				</label>
+				<button className="submit-class" onClick={this.handleClassSubmit}>Save</button>
+				<button className="add-class" onClick={this.handleClassToggle}>{classBtnContent}</button>
 			</div>
 		);
 	}
