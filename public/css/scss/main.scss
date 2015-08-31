@@ -43,6 +43,9 @@ ul li{
 		&.btn-cancel{
 			background-image:url(/images/cancel.svg);
 		}
+		&.btn-delete{
+			background-image:url(/images/delete.svg);
+		}
 	}
 }
 
@@ -54,9 +57,24 @@ ul li.editing{
 	}
 
 	label,
-	.btn-edit{
+	.btn-edit,
+	.btn-delete{
 		display: none;
 	}
+}
+
+ul li button{
+	display:none;
+}
+
+ul li:hover button.btn-edit,
+ul li:hover button.btn-delete{
+	display:inline-block;
+}
+
+ul li.editing:hover button.btn-edit,
+ul li.editing:hover button.btn-delete,{
+	display:none;
 }
 
 div form{
@@ -65,4 +83,30 @@ div form{
 
 .active form{
 	display: block;
+}
+
+.primary-heading{
+	display:block;
+}
+.add-class{
+	cursor:pointer;
+	margin: 0 auto;
+	font-size:1em;
+	display:block;
+	border-radius:0.25em;
+	border:none;
+	padding:1em 2em;
+	outline:none;
+	transition:transform 0.1s ease-out, background-color 0.3s ease-out;
+	color:#ffffff;
+	background-color:rgb(150,150,150);
+	-webkit-font-smoothing:antialiased;
+
+	&:hover{
+		background-color:rgb(120,120,120);
+	}
+
+	&:active{
+		transform:scale(0.95);
+	}
 }
