@@ -4,3 +4,4 @@ node_modules
 .sass-cache/
 public/css/scss/slass.scss
 public/css/**/*.css
+data/fonts.json
