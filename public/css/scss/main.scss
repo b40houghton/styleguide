@@ -88,6 +88,26 @@ div form{
 .primary-heading{
 	display:block;
 }
+
+.class-form-container{
+	
+	label,
+	button{
+		display:none;
+	}
+	.add-class{
+		display: block;
+	}
+
+	&.active{
+		label,
+		button{
+			display: block;
+		}
+	}
+}
+
+
 .add-class{
 	cursor:pointer;
 	margin: 0 auto;
