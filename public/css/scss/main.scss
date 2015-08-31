@@ -1,3 +1,6 @@
+@import 'normalize';
+@import 'class-styles';
+
 ul{
 	margin:0;
 	padding:0;
@@ -95,7 +98,7 @@ div form{
 	button{
 		display:none;
 	}
-	.add-class{
+	.toggle-class{
 		display: block;
 	}
 
@@ -107,26 +110,40 @@ div form{
 	}
 }
 
-
-.add-class{
+.btn{
 	cursor:pointer;
-	margin: 0 auto;
 	font-size:1em;
-	display:block;
 	border-radius:0.25em;
 	border:none;
 	padding:1em 2em;
-	outline:none;
-	transition:transform 0.1s ease-out, background-color 0.3s ease-out;
 	color:#ffffff;
-	background-color:rgb(150,150,150);
 	-webkit-font-smoothing:antialiased;
-
+	outline:none;
+	float:left;
+	display:inline-block;
+	margin:1em 0.5em;
+	background-color:rgb(150,150,150);
+	transition:transform 0.1s ease-out, background-color 0.3s ease-out;
+	&:active{
+		transform:scale(0.95);
+	}
 	&:hover{
 		background-color:rgb(120,120,120);
 	}
+}
 
-	&:active{
-		transform:scale(0.95);
+
+.toggle-class{
+	@extend .btn;
+}
+
+.submit-class{
+	@extend .btn;
+	background:rgb(0,180,60);
+}
+
+.class-form-container.active{
+	.toggle-class{
+		background:rgb(200,50,0);
 	}
 }
